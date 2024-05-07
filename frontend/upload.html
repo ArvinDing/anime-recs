@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Upload MyAnimeList Data</title>
+</head>
+<body>
+    <h2>Upload MyAnimeList Data</h2>
+    <form method="post" enctype="multipart/form-data" action="http://127.0.0.1:5000/upload">
+        <input type="file" name="file" accept=".xml.gz">
+        <input type="submit" value="Upload">
+    </form>
+
+    <div id="usernameContainer"></div>
+
+    
+    <!-- JavaScript to handle the response -->
+    <script>
+        document.querySelector('form').addEventListener('submit', function(event) {
+            event.preventDefault(); // Prevent the form from submitting normally
+            
+            // Create a new FormData object to store the form data
+            var formData = new FormData(this);
+            
+            // Make a POST request to the specified endpoint
+            fetch(this.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => response.json()) // Parse the JSON response
+            .then(data => {
+                // Process the parsed JSON object (if needed)
+                console.log(data); // Log the parsed data to the console
+
+                let username = data.myanimelist.myinfo.user_name;
+                console.log(data.myanimelist)
+                document.getElementById('usernameContainer').innerText = 'Username: ' + username;
+
+                let animes = data.myanimelist.anime
+                for(anime of animes){
+                    if(anime.my_score==10){
+                        console.log(anime)
+                    }
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error); // Log any errors to the console
+            });
+        });
+    </script>
+</body>
+</html>
